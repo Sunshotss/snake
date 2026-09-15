@@ -1,4 +1,5 @@
-﻿using static System.Console;
+﻿using System.Numerics;
+using static System.Console;
 
 namespace sanpe
 {
@@ -8,10 +9,11 @@ namespace sanpe
         {
             CursorVisible = false;
             ConsoleKeyInfo key;
-            List <(y, x)> snake = new List<(y, x)>();
-            int y = 2;
-            int x = 2;
-            int tail = 3;
+            List<Vector2> tail = new List<Vector2>();
+            Vector2 xy;
+            xy.X = 2;
+            xy.Y = 2;
+            int leng = 10;
 
             while (true)
             {
@@ -20,34 +22,36 @@ namespace sanpe
                     key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.W)
                     {
-                        y--;
+                        xy.Y--;
+                        tail.Add(xy);
                     }
                     if (key.Key == ConsoleKey.A)
                     {
-                        x--;
+                        xy.X--;
+                        tail.Add(xy);
                     }
                     if (key.Key == ConsoleKey.S)
                     {
-                        y++;
+                        xy.Y++;
+                        tail.Add(xy);
                     }
                     if (key.Key == ConsoleKey.D)
                     {
-                        x++;
+                        xy.X++;
+                        tail.Add(xy);
                     }
                 }
-                snake.Add(y, x);
-
-
-                for (int i = 0; i < 6; i++)
+                if (tail.Count >= leng)
                 {
-                    for (int j = 0; j < 6; j++)
-                    {
-                        Console.SetCursorPosition(j, i);
-                        Console.Write(" ");
+                    SetCursorPosition((int)tail[0].X, (int)tail[0].Y);
+                    Console.Write(" ");
+                    tail.RemoveAt(0);
+                }
+                for (int i = 0; i < tail.Count(); i++)
+                {
+                    Console.SetCursorPosition((int)tail[i].X, (int)tail[i].Y);
 
-                        Console.SetCursorPosition(y, x);
-                        Console.Write($"{snake[y, x]}");
-                    }
+                    Console.Write("1");
                 }
             }
         }
