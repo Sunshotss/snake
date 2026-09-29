@@ -17,13 +17,13 @@ namespace sanpe
 
             int width = 10;
             int height = 10;
+            List<Vector2> positions = new List<Vector2>();
 
             Random rnd = new Random();
             bool appels = true;
             Vector2 appel;
             appel.X = 2;
             appel.Y = 2;
-
 
             while (true)
             {
@@ -91,7 +91,14 @@ namespace sanpe
                 {
                     for (int j = 0; j < height; j++)
                     {
+                        Vector2 vector;
+                        vector.X = i;
+                        vector.Y = j;
+                        positions.Add(vector);
+                        for (int l = 0; l < tail.Count; l++)
+                        {
 
+                        }
 
                     }
                 }
