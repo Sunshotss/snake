@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
 using static System.Console;
 
 namespace sanpe
@@ -7,6 +8,11 @@ namespace sanpe
     {
         static void Main(string[] args)
         {
+            Stopwatch stoping = new();
+            stoping.Start();
+
+            
+
             CursorVisible = false;
             ConsoleKeyInfo key;
             List<Vector2> tail = new List<Vector2>();
@@ -27,23 +33,12 @@ namespace sanpe
 
             while (true)
             {
-                if (appels)
+                if (stoping.ElapsedMilliseconds < 16)
                 {
-                    appel.X = rnd.Next(height);
-                    appel.Y = rnd.Next(width);
+                    continue;
+                }
 
-                    Console.SetCursorPosition((int)appel.X, (int)appel.Y);
-                    Console.Write("A");
-                    appels = false;
-                }
-                if (!appels)
-                {
-                    if (appel.X == xy.X && appel.Y == xy.Y)
-                    {
-                        leng++;
-                        appels = true;
-                    }
-                }
+                stoping.Restart();
 
                 if (KeyAvailable)
                 {
@@ -69,12 +64,61 @@ namespace sanpe
                         tail.Add(xy);
                     }
                 }
+
+                //making sure appels spawn not on snake
+                positions.Clear();
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        Vector2 vector = new(i, j);
+                        Vector2 vector2 = new();
+                        
+                        for (int l = 0; l < tail.Count; l++)
+                        {
+                            vector2 = tail[l];
+                            if (vector != vector2)
+                            {
+                                positions.Add(vector);
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < positions.Count; i++)
+                {
+                        SetCursorPosition((int)positions[i].X + 10, (int)positions[i].Y + 10);
+                        Console.Write("x");
+                }
+                //making sure appels spawn not on snake
+
+                //appels
+                if (appels)
+                {
+                    appel.X = rnd.Next(height);
+                    appel.Y = rnd.Next(width);
+                    Console.SetCursorPosition((int)appel.X, (int)appel.Y);
+                    Console.Write("A");
+                    appels = false;
+                }
+                if (!appels) //collision?
+                {
+                    if (appel.X == xy.X && appel.Y == xy.Y)
+                    {
+                        leng++;
+                        appels = true;
+                    }
+                }
+                //appels
+                
+                
                 if (tail.Count > leng)
                 {
                     SetCursorPosition((int)tail[0].X, (int)tail[0].Y);
                     Console.Write(" ");
                     tail.RemoveAt(0);
                 }
+
                 for (int i = 0; i < tail.Count(); i++)
                 {
                     Console.SetCursorPosition((int)tail[i].X, (int)tail[i].Y);
@@ -87,21 +131,6 @@ namespace sanpe
                 Console.Write($"{appel.X} {xy.X}");
                 Console.SetCursorPosition(15, 20);
                 Console.Write($"{appel.Y} {xy.Y}");
-                for (int i = 0; i < height; i++)
-                {
-                    for (int j = 0; j < height; j++)
-                    {
-                        Vector2 vector;
-                        vector.X = i;
-                        vector.Y = j;
-                        positions.Add(vector);
-                        for (int l = 0; l < tail.Count; l++)
-                        {
-
-                        }
-
-                    }
-                }
             }
         }
     }
