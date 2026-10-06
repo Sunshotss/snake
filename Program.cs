@@ -46,11 +46,13 @@ namespace sanpe
                     if (key.Key == ConsoleKey.W)
                     {
                         xy.Y--;
+                        if (xy.Y < 0) xy.Y++;
                         tail.Add(xy);
                     }
                     if (key.Key == ConsoleKey.A)
                     {
                         xy.X--;
+                        if (xy.X < 0) xy.X++;
                         tail.Add(xy);
                     }
                     if (key.Key == ConsoleKey.S)
@@ -71,33 +73,38 @@ namespace sanpe
                 {
                     for (int j = 0; j < height; j++)
                     {
-                        Vector2 vector = new(i, j);
-                        Vector2 vector2 = new();
-                        
+                        Vector2 pos = new(i, j);
+                        bool isInSnake = false;
                         for (int l = 0; l < tail.Count; l++)
                         {
-                            vector2 = tail[l];
-                            if (vector != vector2)
+                            if (tail[l] == pos)
                             {
-                                positions.Add(vector);
+                                isInSnake = true;
+                                break;
                             }
                         }
+                        if (!isInSnake) positions.Add(pos);
                     }
-                }
-
-                for (int i = 0; i < positions.Count; i++)
-                {
-                        SetCursorPosition((int)positions[i].X + 10, (int)positions[i].Y + 10);
-                        Console.Write("x");
                 }
                 //making sure appels spawn not on snake
 
                 //appels
+                Console.SetCursorPosition(30,10);
+                Console.Write(" ");
+                Console.SetCursorPosition(31, 10);
+                Console.Write(" ");
+                Console.SetCursorPosition(32, 10);
+                Console.Write(" ");
+                Console.SetCursorPosition(30, 10);
+                Console.Write(positions.Count);
                 if (appels)
                 {
-                    appel.X = rnd.Next(height);
-                    appel.Y = rnd.Next(width);
+                    var randompos = positions[rnd.Next(positions.Count)];
+                    appel.X = randompos.X;
+                    appel.Y = randompos.Y;
                     Console.SetCursorPosition((int)appel.X, (int)appel.Y);
+
+
                     Console.Write("A");
                     appels = false;
                 }
@@ -128,9 +135,7 @@ namespace sanpe
                 Console.SetCursorPosition(5, 20);
                 Console.Write($"{leng}");
                 Console.SetCursorPosition(10, 20);
-                Console.Write($"{appel.X} {xy.X}");
-                Console.SetCursorPosition(15, 20);
-                Console.Write($"{appel.Y} {xy.Y}");
+                Console.Write($"{appel}");
             }
         }
     }
