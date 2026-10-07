@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.Http.Headers;
 using System.Numerics;
 using static System.Console;
 
@@ -11,15 +13,18 @@ namespace sanpe
             Stopwatch stoping = new();
             stoping.Start();
 
+            bool dead = false;
+            int inte = 0;
             
+            ConsoleKeyInfo key;
+            Vector2 headdir = new(1, 0);
+            int leng = 3;
+            List<Vector2> tail = new List<Vector2>();
+            Vector2 headpos = new(2, 2);
+
+
 
             CursorVisible = false;
-            ConsoleKeyInfo key;
-            List<Vector2> tail = new List<Vector2>();
-            Vector2 xy;
-            xy.X = 2;
-            xy.Y = 2;
-            int leng = 3;
 
             int width = 10;
             int height = 10;
@@ -27,13 +32,24 @@ namespace sanpe
 
             Random rnd = new Random();
             bool appels = true;
-            Vector2 appel;
-            appel.X = 2;
-            appel.Y = 2;
+            Vector2 appel = new(2, 2);
+
+
+            for (int i = 0; i < width; i++)
+            {
+                Console.SetCursorPosition(i, height);
+                Console.Write("%");
+            }
+            for (int j = 0; j < height; j++)
+            {
+                Console.SetCursorPosition(width, j);
+                Console.Write("%");
+            }
+
 
             while (true)
             {
-                if (stoping.ElapsedMilliseconds < 16)
+                if (stoping.ElapsedMilliseconds < 192)
                 {
                     continue;
                 }
@@ -45,27 +61,28 @@ namespace sanpe
                     key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.W)
                     {
-                        xy.Y--;
-                        if (xy.Y < 0) xy.Y++;
-                        tail.Add(xy);
+                        headdir = new(0, -1);
                     }
                     if (key.Key == ConsoleKey.A)
                     {
-                        xy.X--;
-                        if (xy.X < 0) xy.X++;
-                        tail.Add(xy);
+                        headdir = new(-1, 0);
                     }
                     if (key.Key == ConsoleKey.S)
                     {
-                        xy.Y++;
-                        tail.Add(xy);
+                        headdir = new(0, 1);
                     }
                     if (key.Key == ConsoleKey.D)
                     {
-                        xy.X++;
-                        tail.Add(xy);
+                        headdir = new(1, 0);
                     }
                 }
+                headpos += headdir;
+                if (headpos.Y < 0) dead = true;
+                if (headpos.X < 0) dead = true;
+                if (headpos.Y >= width) dead = true;
+                if (headpos.X >= height) dead = true;
+                tail.Add(headpos);
+
 
                 //making sure appels spawn not on snake
                 positions.Clear();
@@ -110,7 +127,7 @@ namespace sanpe
                 }
                 if (!appels) //collision?
                 {
-                    if (appel.X == xy.X && appel.Y == xy.Y)
+                    if (appel.X == headpos.X && appel.Y == headpos.Y)
                     {
                         leng++;
                         appels = true;
@@ -130,12 +147,23 @@ namespace sanpe
                 {
                     Console.SetCursorPosition((int)tail[i].X, (int)tail[i].Y);
 
-                    Console.Write("1");
+                    Console.Write("#");
                 }
                 Console.SetCursorPosition(5, 20);
                 Console.Write($"{leng}");
                 Console.SetCursorPosition(10, 20);
-                Console.Write($"{appel}");
+                Console.Write($"{appel}" + inte);
+                inte++;
+
+                for (int i = 0; i < tail.Count() - 1; i++)
+                {
+                    if (tail[i] == headpos)
+                    {
+                        dead = true;
+                        break;
+                    }
+                }
+                if (dead == true) break;
             }
         }
     }
